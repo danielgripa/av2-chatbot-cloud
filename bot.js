@@ -1,28 +1,71 @@
-const { ActivityHandler, MessageFactory } = require('botbuilder');
+const { ActivityHandler, MessageFactory, ActionTypes } = require('botbuilder');
 
 class EchoBot extends ActivityHandler {
     constructor() {
         super();
-        // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         this.onMessage(async (context, next) => {
-            const replyText = `Você escreveu a frase: ${ context.activity.text }`;
-            await context.sendActivity(MessageFactory.text(replyText, replyText));
-            // By calling next() you ensure that the next BotHandler is run.
+            const command = `${ context.activity.text }`;
+            const textCommand = `Voce deseja fazer isso: ${command}`;
+            switch (command) {
+                case 'pedidos': {
+                    await context.sendActivity(MessageFactory.text(textCommand, textCommand));
+                    break;
+                }
+                case 'produtos': {
+                    await context.sendActivity(MessageFactory.text(textCommand, textCommand));
+                    break;
+                }
+                case 'extrato': {
+                    await context.sendActivity(MessageFactory.text(textCommand, textCommand));
+                    break;
+                }
+            }
+            await this.sendCard(context);
             await next();
         });
 
         this.onMembersAdded(async (context, next) => {
-            const membersAdded = context.activity.membersAdded;
-            const welcomeText = 'Bem vindo ao bot do Ibmec, digite algo que eu vou repetir';
-            for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
-                if (membersAdded[cnt].id !== context.activity.recipient.id) {
-                    await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
-                }
-            }
-            // By calling next() you ensure that the next BotHandler is run.
+            await this.sendWelcome(context);
             await next();
         });
+
     }
+
+    async sendWelcome(context) {
+        const membersAdded = context.activity.membersAdded;
+        const welcomeText = 'Bem vindo ao bot, selecione no card a ação';
+        for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
+            if (membersAdded[cnt].id !== context.activity.recipient.id) {
+                await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
+                await this.sendCard(context);
+            }
+        }
+    }
+
+    async sendCard(context) {
+        const cardActions = [
+            {
+                type: ActionTypes.PostBack,
+                title: 'Consultar Pedidos',
+                value: 'pedidos',
+            },
+            {
+                type: ActionTypes.PostBack,
+                title: 'Consultar Produtos',
+                value: 'produtos',
+            },
+            {
+                type: ActionTypes.PostBack,
+                title: 'Extrato de Compras',
+                value: 'extrato',
+            },
+        ];
+
+        var reply = MessageFactory.suggestedActions(cardActions, 'Como posso te ajudar?');
+        await context.sendActivity(reply);
+    }
+
+
 }
 
 module.exports.EchoBot = EchoBot;
