@@ -15,13 +15,9 @@ class MainBot extends ActivityHandler {
                 case 'produtos': {
 
                     let produto = new Produto();
-                    produto.getProduto(context, "lorem ipsum").then(async (response) => {
-                        let card = produto.createProductCard(response.data[0]);
-                        await context.sendActivity({ attachments: [card] });
-                    }).catch(error => {
-                        console.log(error);
-                    });
-                    
+                    let response = await produto.getProduto(context, "lorem ipsum");
+                    let card = produto.createProductCard(response.data[0]);
+                    await context.sendActivity({ attachments: [card] });
                     break;
                 }
                 case 'extrato': {
