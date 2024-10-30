@@ -5,12 +5,10 @@ class Produto {
 
     urlApi = 'http://localhost:8080/products';
 
-    async getProduto(context, productName) {
+    async getProduto(productName) {
         const headers = {
             'ocp-apim-subscription-key': '8ef0a7b573104f31bbdc17d838c76a2a'
         };
-
-        productName = "Smart TV Crystal Samsung 50"
         return await axios.get(`${this.urlApi}?productName=${productName}`, {headers: headers});
     }
     createProductCard(response) {

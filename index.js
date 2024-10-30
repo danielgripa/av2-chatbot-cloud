@@ -11,12 +11,17 @@ const restify = require('restify');
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const {
     CloudAdapter,
+    ConversationState,
+    MemoryStorage,
+    UserState,
+    ConfigurationBotFrameworkAuthentication,
     ConfigurationServiceClientCredentialFactory,
     createBotFrameworkAuthenticationFromConfiguration
 } = require('botbuilder');
 
 // This bot's main dialog.
-const { MainBot } = require('./bot');
+const { DialogBot } = require('./bot');
+const { ProductDialog } = require('./dialog/produtoDialog');
 
 // Create HTTP server
 const server = restify.createServer();
@@ -64,13 +69,22 @@ const onTurnErrorHandler = async (context, error) => {
 // Set the onTurnError for the singleton CloudAdapter.
 adapter.onTurnError = onTurnErrorHandler;
 
-// Create the main dialog.
-const myBot = new MainBot();
+// Define the state store for your bot.
+// See https://aka.ms/about-bot-state to learn more about using MemoryStorage.
+// A bot requires a state storage system to persist the dialog and user state between messages.
+const memoryStorage = new MemoryStorage();
+
+// Create conversation state with in-memory storage provider.
+const conversationState = new ConversationState(memoryStorage);
+const userState = new UserState(memoryStorage);
+
+const dialog = new ProductDialog(userState);
+const bot = new DialogBot(conversationState, userState, dialog);
 
 // Listen for incoming requests.
 server.post('/api/messages', async (req, res) => {
     // Route received a request to adapter for processing
-    await adapter.process(req, res, (context) => myBot.run(context));
+    await adapter.process(req, res, (context) => bot.run(context));
 });
 
 // Listen for Upgrade requests for Streaming.

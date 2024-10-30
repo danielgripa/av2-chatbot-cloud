@@ -18,7 +18,10 @@
     "dependencies": {
         "axios": "^1.7.7",
         "botbuilder": "~4.22.1",
+        "botbuilder-dialogs": "~4.23.0",
         "dotenv": "~8.2.0",
+        "ibmec-bot": "file:",
+        "path": "^0.12.7",
         "restify": "~11.1.0"
     },
     "devDependencies": {
