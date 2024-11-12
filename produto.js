@@ -3,7 +3,7 @@ const { CardFactory } = require('botbuilder');
 
 class Produto {
 
-    urlApi = 'http://localhost:8080/products';
+    urlApi = process.env.PRODUTO_URL_API;
 
     async getProduto(productName) {
         const headers = {
