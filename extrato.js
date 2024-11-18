@@ -6,10 +6,11 @@ const format = require('date-format');
 class Extrato {
 
     urlApi = process.env.EXTRATO_URL_API;
+    apiKey = process.env.GATEWAY_ACCESS_KEY;
 
     async getExtrato(idUser, numeroCartao) {
         const headers = {
-            'ocp-apim-subscription-key': '8ef0a7b573104f31bbdc17d838c76a2a'
+            'ocp-apim-subscription-key': this.apiKey
         };
 
         return await axios.get(`${this.urlApi}/${idUser}?numeroCartao=${numeroCartao}`);
