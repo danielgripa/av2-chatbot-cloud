@@ -83,6 +83,30 @@ class Orders {
         console.log('Mensagem gerada para o chat:', result); // Log da mensagem final
         return result;
     }
+
+    async checkout(userId, productId, cardId) {
+        const url = 'http://localhost:8081/checkout';
+        const payload = {
+            idUsuario: userId,
+            productId: productId,
+            numeroCartao: cardId
+        };
+
+        try {
+            console.log(idUsuario, productId, numeroCartao)
+            const response = await axios.post(url, payload);
+
+            if (response.status === 200) {
+                console.log('Checkout realizado com sucesso:', response.data);
+                return response;
+            }
+
+            throw new Error('Erro no processamento do checkout.');
+        } catch (error) {
+            console.error('Erro ao realizar checkout:', error.message);
+            throw new Error('Falha ao realizar o checkout. Por favor, tente novamente.');
+        }
+    }
     
     
 }

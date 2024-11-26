@@ -39,7 +39,9 @@ class ProductDialog extends ComponentDialog {
             this.menuStep.bind(this),
             this.productNameStep.bind(this),
             this.cartaoNumberStep.bind(this),
-            this.confirmStep.bind(this)
+            this.confirmStep.bind(this),
+            this.checkoutOptionStep.bind(this),
+            this.checkoutStep.bind(this)
         ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -72,39 +74,39 @@ class ProductDialog extends ComponentDialog {
 
     async confirmStep(step) {
         switch (step.values.choice) {
-                case "Consultar Pedidos": {
-                    const { Orders } = require('../orders');
-                    let cpf = step.values.id; // CPF digitado pelo usuário
-                    let numeroCartaoDigitado = step.result; // Número do cartão digitado
-        
-                    let orders = new Orders();
-                    try {
-                        // Etapa 1: Buscar ID do cliente pelo CPF.
-                        let userId = await orders.getUserIdByCPF(cpf);
-        
-                        // Etapa 2: Buscar lista de cartões do cliente pelo ID.
-                        let cartoes = await orders.getCardsByUserId(userId);
-        
-                        // Etapa 3: Localizar o ID do cartão correspondente ao número digitado.
-                        let cartaoEncontrado = cartoes.find(cartao => cartao.numeroCartao.toString() === numeroCartaoDigitado);
-                        if (!cartaoEncontrado) {
-                            throw new Error('Cartão não encontrado na lista de cartões do cliente.');
-                        }
-                        let cardId = cartaoEncontrado.id;
-        
-                        // Etapa 4: Buscar pedidos pelo ID do cartão encontrado.
-                        let response = await orders.getOrdersByCardId(cardId);
-        
-                        // Formatar e exibir os pedidos.
-                        let message = await orders.formatOrders(response);
-                        await step.context.sendActivity(message);
-                    } catch (error) {
-                        // Exibe a mensagem de erro no chat
-                        console.error('Erro no fluxo de consulta de pedidos:', error.message);
-                        await step.context.sendActivity(`Erro ao processar sua solicitação: ${error.message}`);
+            case "Consultar Pedidos": {
+                const { Orders } = require('../orders');
+                let cpf = step.values.id; // CPF digitado pelo usuário
+                let numeroCartaoDigitado = step.result; // Número do cartão digitado
+    
+                let orders = new Orders();
+                try {
+                    // Etapa 1: Buscar ID do cliente pelo CPF.
+                    let userId = await orders.getUserIdByCPF(cpf);
+    
+                    // Etapa 2: Buscar lista de cartões do cliente pelo ID.
+                    let cartoes = await orders.getCardsByUserId(userId);
+    
+                    // Etapa 3: Localizar o ID do cartão correspondente ao número digitado.
+                    let cartaoEncontrado = cartoes.find(cartao => cartao.numeroCartao.toString() === numeroCartaoDigitado);
+                    if (!cartaoEncontrado) {
+                        throw new Error('Cartão não encontrado na lista de cartões do cliente.');
                     }
-                    break;
+                    let cardId = cartaoEncontrado.id;
+    
+                    // Etapa 4: Buscar pedidos pelo ID do cartão encontrado.
+                    let response = await orders.getOrdersByCardId(cardId);
+    
+                    // Formatar e exibir os pedidos.
+                    let message = await orders.formatOrders(response);
+                    await step.context.sendActivity(message);
+                } catch (error) {
+                    // Exibe a mensagem de erro no chat
+                    console.error('Erro no fluxo de consulta de pedidos:', error.message);
+                    await step.context.sendActivity(`Erro ao processar sua solicitação: ${error.message}`);
                 }
+                break;
+            }
     
             case "Extrato de Compras": {
                 const { Extrato } = require('../extrato');
@@ -124,8 +126,9 @@ class ProductDialog extends ComponentDialog {
                 let response = await produto.getProduto(productName);
                 let card = produto.createProductCard(response.data[0]);
                 await step.context.sendActivity({ attachments: [card] });
-                break;
-            }
+                break
+            };
+
         }
 
         return await step.endDialog();
@@ -145,6 +148,56 @@ class ProductDialog extends ComponentDialog {
             await dialogContext.beginDialog(this.id);
         }
     }
+
+    async checkoutOptionStep(step) {
+        if (step.values.choice === "Consultar Produtos") {
+            // Pergunta ao usuário se ele deseja realizar o checkout.
+            return await step.prompt(CHOICE_PROMPT, {
+                prompt: 'Deseja realizar o checkout deste produto?',
+                choices: ChoiceFactory.toChoices(['Sim', 'Não'])
+            });
+        }
+        return await step.endDialog();
+    }
+
+    async checkoutStep(step) {
+        if (step.result.value === 'Sim') {
+            const { Orders } = require('../orders');
+            const orders = new Orders();
+    
+        const cpf = step.values.id; // CPF digitado pelo usuário.
+        const numeroCartaoDigitado = step.result; // Número do cartão digitado.
+    
+        try {
+            // Etapa 1: Buscar ID do cliente pelo CPF.
+            const userId = await orders.getUserIdByCPF(cpf);
+    
+            // Etapa 2: Buscar lista de cartões do cliente pelo ID.
+            const cartoes = await orders.getCardsByUserId(userId);
+    
+            // Etapa 3: Localizar o ID do cartão correspondente ao número digitado.
+            const cartaoEncontrado = cartoes.find(cartao => cartao.numeroCartao.toString() === numeroCartaoDigitado);
+            if (!cartaoEncontrado) {
+                throw new Error('Cartão não encontrado na lista de cartões do cliente.');
+            }
+            const cardId = cartaoEncontrado.id;
+    
+            // Etapa 4: Realizar o checkout.
+            const productId = step.values.id; // ID do produto selecionado.
+            console.log('Dados para o checkout:', userId, productId, cardId);
+            const response = await orders.checkout(userId, productId, cardId);
+    
+            // Resposta de sucesso.
+            await step.context.sendActivity(`Checkout realizado com sucesso! Pedido ID: ${response.data.orderId}`);
+        } catch (error) {
+            console.error('Erro no checkout:', error.message);
+            await step.context.sendActivity(`Erro ao processar o checkout: ${error.message}`);
+        }
+    
+        return await step.endDialog();
+        }
+    }   
+    
 }
 
 module.exports.ProductDialog = ProductDialog;
