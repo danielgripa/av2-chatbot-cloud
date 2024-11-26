@@ -91,22 +91,37 @@ class Orders {
             productId: productId,
             numeroCartao: cardId
         };
-
+    
         try {
-            console.log(idUsuario, productId, numeroCartao)
+            console.log('Valores recebidos no checkout:', { userId, productId, cardId });
             const response = await axios.post(url, payload);
-
-            if (response.status === 200) {
-                console.log('Checkout realizado com sucesso:', response.data);
-                return response;
+            console.log('Resposta da API:', response.data, response.status);
+    
+            if (response.status === 201 || response.data.status === 'Produto Comprado') {
+                return { 
+                    success: true, 
+                    message: `Compra realizada com sucesso! Pedido ID: ${response.data.orderId}`, 
+                    details: response.data 
+                };
             }
-
-            throw new Error('Erro no processamento do checkout.');
+    
+            return { 
+                success: false, 
+                message: response.data.mensagem || 'Não foi possível realizar a compra.',
+                details: response.data 
+            };
         } catch (error) {
             console.error('Erro ao realizar checkout:', error.message);
-            throw new Error('Falha ao realizar o checkout. Por favor, tente novamente.');
+            const errorDetails = error.response?.data || { mensagem: 'Erro desconhecido no checkout.' };
+            return { 
+                success: false, 
+                message: errorDetails.mensagem, 
+                details: errorDetails 
+            };
         }
     }
+    
+    
     
     
 }

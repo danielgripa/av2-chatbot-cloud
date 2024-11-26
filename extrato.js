@@ -5,7 +5,7 @@ const format = require('date-format');
 
 class Extrato {
 
-    urlApi = "http://localhost:8080/transacoes/cliente"; //process.env.EXTRATO_URL_API;
+    urlApi = "https://ibmec-transacoes-eff6aberc9atagev.canadacentral-01.azurewebsites.net/transacoes/cliente/"; //process.env.EXTRATO_URL_API;
     //apiKey = process.env.GATEWAY_ACCESS_KEY;
 
     async getExtrato(idUser, numeroCartao) {
