@@ -1,61 +1,69 @@
-# ibmec-bot
+# Projeto AV2 - Chatbot Cloud
 
-Demonstrate the core capabilities of the Microsoft Bot Framework
+## **Descrição**
+Projeto AV2 de Big Data e Cloud Computing, do professor Rafael Cruz da Instituição IBMEC, graduação em Ciências de Dados e Inteligência Artificial.
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and echoes it back.
+Alunos: André Silveira e Daniel Gripa Cavalcanti
 
-## Prerequisites
+O chatbot foi a terceira etapa do projeto, que incluiu:
+1. Criação de um **web app/backend API** para um sistema de cartão de crédito (transação, cliente, cartão) usando **SQL Server**.
+2. Desenvolvimento de um **web app/backend API** para um sistema de e-commerce (produtos e pedidos) usando **CosmosDB**, um banco de dados não relacional.
+3. Este **chatbot**, que correlaciona a operação dos dois sistemas.
 
-- [Node.js](https://nodejs.org) version 10.14.1 or higher
+URLs dos projetos anteriores:
+- Sistema de Cartão de Crédito: *(adicionar URL)*
+- Sistema de E-commerce: *(adicionar URL)*
 
-    ```bash
-    # determine node version
-    node --version
-    ```
+---
 
-## To run the bot
+## **Diálogos e Interações do Chatbot**
 
-- Install modules
+1. **Consultar Produtos**
+   - Permite pesquisar produtos pelo nome.
+   - Exibe os detalhes e uma imagem do produto.
+   - Possibilidade de comprar diretamente pelo chatbot.
 
-    ```bash
-    npm install
-    ```
+2. **Consultar Pedidos**
+   - Permite consultar pedidos associados a um CPF e número de cartão.
 
-- Start the bot
+3. **Extrato de Compras**
+   - Gera um extrato detalhado das compras realizadas por um cartão de crédito.
 
-    ```bash
-    npm start
-    ```
+---
 
-## Testing the bot using Bot Framework Emulator
+## **Como Configurar e Usar**
 
-[Bot Framework Emulator](https://github.com/microsoft/botframework-emulator) is a desktop application that allows bot developers to test and debug their bots on localhost or running remotely through a tunnel.
+1. **Clone o Repositório**
+   ```bash
+   git clone https://github.com/danielgripa/av2-chatbot-cloud.git
+   cd av2-chatbot-cloud
+   ```
 
-- Install the Bot Framework Emulator version 4.9.0 or greater from [here](https://github.com/Microsoft/BotFramework-Emulator/releases)
+2. **Instale as Dependências**
+   ```bash
+   npm install
+   ```
 
-### Connect to the bot using Bot Framework Emulator
+3. **Configuração do Ambiente**
+   - Renomeie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente:
+     - Credenciais do Azure Bot Framework.
+     - Conexões com os bancos de dados (SQL Server e CosmosDB).
 
-- Launch Bot Framework Emulator
-- File -> Open Bot
-- Enter a Bot URL of `http://localhost:3978/api/messages`
+4. **Inicie o Servidor**
+   ```bash
+   npm start
+   ```
 
-## Deploy the bot to Azure
+5. **Testando o Chatbot**
+   - Abra o **Bot Framework Emulator**.
+   - Configure a URL do endpoint: `http://localhost:3978/api/messages`.
+   - Interaja com o bot pelos diálogos disponíveis.
 
-To learn more about deploying a bot to Azure, see [Deploy your bot to Azure](https://aka.ms/azuredeployment) for a complete list of deployment instructions.
+6. **Implantação**
+   - O bot pode ser implantado em qualquer serviço de hospedagem que suporte Node.js, como **Azure App Service**, **Heroku**, ou servidores locais.
+   - Certifique-se de configurar adequadamente as variáveis de ambiente no ambiente de produção.
 
+---
 
-## Further reading
-
-- [Bot Framework Documentation](https://docs.botframework.com)
-- [Bot Basics](https://docs.microsoft.com/azure/bot-service/bot-builder-basics?view=azure-bot-service-4.0)
-- [Dialogs](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-concept-dialog?view=azure-bot-service-4.0)
-- [Gathering Input Using Prompts](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-prompts?view=azure-bot-service-4.0)
-- [Activity processing](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-concept-activity-processing?view=azure-bot-service-4.0)
-- [Azure Bot Service Introduction](https://docs.microsoft.com/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
-- [Azure Bot Service Documentation](https://docs.microsoft.com/azure/bot-service/?view=azure-bot-service-4.0)
-- [Azure CLI](https://docs.microsoft.com/cli/azure/?view=azure-cli-latest)
-- [Azure Portal](https://portal.azure.com)
-- [Language Understanding using LUIS](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/)
-- [Channels and Bot Connector Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-concepts?view=azure-bot-service-4.0)
-- [Restify](https://www.npmjs.com/package/restify)
-- [dotenv](https://www.npmjs.com/package/dotenv)
+## **Agradecimentos**
+Agradecemos ao professor Rafael Cruz e à Instituição IBMEC pela oportunidade de desenvolver este projeto como parte do curso de Ciências de Dados e Inteligência Artificial.
