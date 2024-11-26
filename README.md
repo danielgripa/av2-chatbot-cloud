@@ -62,6 +62,10 @@ URLs dos projetos anteriores:
 6. **Implantação**
    - O bot pode ser implantado em qualquer serviço de hospedagem que suporte Node.js, como **Azure App Service**, **Heroku**, ou servidores locais.
    - Certifique-se de configurar adequadamente as variáveis de ambiente no ambiente de produção.
+  
+7. **Relatório no Google Colab**
+   - Incluimos gráficos para análisar as seguintes métricas do ecommerce: Produtos mais vendidos, Ticket Médio dos Produtos, Receita por Produto, Top Clientes por Volume de Compra
+   - https://colab.research.google.com/drive/1L05oFbrU6HT9Bf2usXIqemEyN-Ffqjbu?usp=sharing
 
 ---
 
