@@ -5,8 +5,8 @@ const format = require('date-format');
 
 class Extrato {
 
-    urlApi = process.env.EXTRATO_URL_API;
-    apiKey = process.env.GATEWAY_ACCESS_KEY;
+    urlApi = "http://localhost:8080/transacoes/cliente"; //process.env.EXTRATO_URL_API;
+    //apiKey = process.env.GATEWAY_ACCESS_KEY;
 
     async getExtrato(idUser, numeroCartao) {
         const headers = {
@@ -14,7 +14,7 @@ class Extrato {
         };
 
         return await axios.get(`${this.urlApi}/${idUser}?numeroCartao=${numeroCartao}`);
-    }
+        }
 
     formatExtrato(response) {
         let table = `| **DATA COMPRA** | **DESCRICAO** | **VALOR** |\n\n
