@@ -3,10 +3,10 @@ const { CardFactory } = require('botbuilder');
 
 class Produto {
     constructor() {
-        this.urlApi = "http://localhost:8081/products"; // Substitua pelo valor correto, se necessário.
+        this.urlApi = "https://ecommerce-app-av2-fbfrc3hhaxakhhh0.canadacentral-01.azurewebsites.net/products"; // Substitua pelo valor correto, se necessário.
         this.apiKey = process.env.GATEWAY_ACCESS_KEY;
     }
-
+    
     async getProduto(productName) {
         try {
             // Chamada à API com validação de headers (se necessário no futuro)
