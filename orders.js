@@ -30,7 +30,7 @@ class Orders {
     }
     
     async getOrdersByCardId(cardId) {
-        const url = `http://localhost:8081/orders/cartao/${cardId}`;
+        const url = https://ecommerce-app-av2-fbfrc3hhaxakhhh0.canadacentral-01.azurewebsites.net/orders/cartao/${cardId};
         try {
             const response = await axios.get(url);
             if (response.status === 200) {
@@ -85,7 +85,7 @@ class Orders {
     }
 
     async checkout(userId, productId, cardId) {
-        const url = 'http://localhost:8081/checkout';
+        const url = 'https://ecommerce-app-av2-fbfrc3hhaxakhhh0.canadacentral-01.azurewebsites.net/checkout';
         const payload = {
             idUsuario: userId,
             productId: productId,
