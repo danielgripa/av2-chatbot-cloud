@@ -1,38 +1,33 @@
 const path = require('path');
-
 const dotenv = require('dotenv');
-// Import required bot configuration.
-const ENV_FILE = path.join(__dirname, '.env');
-dotenv.config({ path: ENV_FILE });
-
 const restify = require('restify');
-
-// Import required bot services.
-// See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const {
     CloudAdapter,
     ConversationState,
     MemoryStorage,
     UserState,
-    ConfigurationBotFrameworkAuthentication,
     ConfigurationServiceClientCredentialFactory,
     createBotFrameworkAuthenticationFromConfiguration
 } = require('botbuilder');
 
-// This bot's main dialog.
-const { DialogBot } = require('./bot');
-const { ProductDialog } = require('./dialog/produtoDialog');
+// Carregar variáveis de ambiente
+const ENV_FILE = path.join(__dirname, '.env');
+dotenv.config({ path: ENV_FILE });
 
-// Create HTTP server
+// Importar diálogos e bot principal
+const { DialogBot } = require('./bot');
+const { MainDialog } = require('./dialog/mainDialog');
+
+// Configuração do servidor HTTP
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
 
 server.listen(process.env.port || process.env.PORT || 3978, () => {
-    console.log(`\n${ server.name } listening to ${ server.url }`);
-    console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
-    console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
+    console.log(`\n${server.name} ouvindo em ${server.url}`);
+    console.log('\nAbra o Bot Framework Emulator e conecte ao endpoint "/api/messages".');
 });
 
+// Configuração de credenciais
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
     MicrosoftAppPassword: process.env.MicrosoftAppPassword,
@@ -42,58 +37,41 @@ const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
 
 const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfiguration(null, credentialsFactory);
 
-// Create adapter.
-// See https://aka.ms/about-bot-adapter to learn more about adapters.
+// Criar adaptador
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
-// Catch-all for errors.
+// Configurar manipulador de erros
 const onTurnErrorHandler = async (context, error) => {
-    // This check writes out errors to console log .vs. app insights.
-    // NOTE: In production environment, you should consider logging this to Azure
-    //       application insights.
-    console.error(`\n [onTurnError] unhandled error: ${ error }`);
-
-    // Send a trace activity, which will be displayed in Bot Framework Emulator
+    console.error(`\n[onTurnError] Erro não tratado: ${error}`);
     await context.sendTraceActivity(
         'OnTurnError Trace',
-        `${ error }`,
+        `${error}`,
         'https://www.botframework.com/schemas/error',
         'TurnError'
     );
-
-    // Send a message to the user
-    await context.sendActivity('The bot encountered an error or bug.');
-    await context.sendActivity('To continue to run this bot, please fix the bot source code.');
+    await context.sendActivity('O bot encontrou um erro ou bug.');
+    await context.sendActivity('Por favor, corrija o código-fonte do bot para continuar.');
 };
-
-// Set the onTurnError for the singleton CloudAdapter.
 adapter.onTurnError = onTurnErrorHandler;
 
-// Define the state store for your bot.
-// See https://aka.ms/about-bot-state to learn more about using MemoryStorage.
-// A bot requires a state storage system to persist the dialog and user state between messages.
+// Configuração de armazenamento de estado
 const memoryStorage = new MemoryStorage();
-
-// Create conversation state with in-memory storage provider.
 const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
-const dialog = new ProductDialog(userState);
-const bot = new DialogBot(conversationState, userState, dialog);
+// Configurar MainDialog como entrada principal
+const mainDialog = new MainDialog(userState);
+const bot = new DialogBot(conversationState, userState, mainDialog);
 
-// Listen for incoming requests.
+// Endpoint para mensagens
 server.post('/api/messages', async (req, res) => {
-    // Route received a request to adapter for processing
     await adapter.process(req, res, (context) => bot.run(context));
 });
 
-// Listen for Upgrade requests for Streaming.
+// Suporte para WebSocket
 server.on('upgrade', async (req, socket, head) => {
-    // Create an adapter scoped to this WebSocket connection to allow storing session data.
     const streamingAdapter = new CloudAdapter(botFrameworkAuthentication);
-
-    // Set onTurnError for the CloudAdapter created for each connection.
     streamingAdapter.onTurnError = onTurnErrorHandler;
 
-    await streamingAdapter.process(req, socket, head, (context) => myBot.run(context));
+    await streamingAdapter.process(req, socket, head, (context) => bot.run(context));
 });

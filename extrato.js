@@ -12,6 +12,7 @@ class Extrato {
         const headers = {
             'ocp-apim-subscription-key': this.apiKey
         };
+        console.log("Usuário:", idUser, "Cartao:", numeroCartao)
 
         return await axios.get(`${this.urlApi}/${idUser}?numeroCartao=${numeroCartao}`);
         }
