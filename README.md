@@ -11,8 +11,36 @@ O chatbot foi a terceira etapa do projeto, que incluiu:
 3. Este **chatbot**, que correlaciona a operação dos dois sistemas.
 
 URLs dos projetos anteriores:
-- Sistema de Cartão de Crédito: *(adicionar URL)*
-- Sistema de E-commerce: *(adicionar URL)*
+- Sistema de Cartão de Crédito: [Ecommerce ](https://github.com/danielgripa/av2-ecommerce)
+- Sistema de E-commerce: [Sistema de Transação ](https://github.com/andresilveira18/Projeto-Cloud-Springboot)
+---
+
+## **Tecnologias Utilizadas**
+
+Este chatbot foi desenvolvido utilizando as seguintes tecnologias:
+
+1. **Linguagem de Programação**:
+   - **JavaScript**: Toda a lógica do bot foi implementada em JavaScript, utilizando práticas modernas de programação.
+
+2. **Frameworks e Bibliotecas**:
+   - **Bot Framework SDK**: Framework oficial da Microsoft para criação de bots inteligentes e interativos.
+   - **Restify**: Usado para configurar o servidor web do bot.
+   - **botbuilder-dialogs**: Biblioteca para gerenciar diálogos e interações com os usuários.
+   - **dotenv**: Para gerenciar variáveis de ambiente de forma segura.
+
+3. **Serviços de Banco de Dados**:
+   - **CosmosDB**: Banco de dados não relacional usado para armazenar informações do sistema de e-commerce.
+   - **SQL Server**: Banco de dados relacional usado para o sistema de cartão de crédito.
+
+4. **Plataformas de Hospedagem**:
+   - Pode ser implantado em serviços como **Azure App Service**, **Heroku** ou servidores locais.
+
+5. **Ambiente de Teste**:
+   - **Bot Framework Emulator**: Ferramenta para testar interações e fluxos do chatbot localmente.
+
+6. **Outras Ferramentas**:
+   - **Postman**: Para testar APIs e validar a integração com os sistemas de backend.
+   - **Visual Studio Code**: IDE usada para o desenvolvimento do código.
 
 ---
 
